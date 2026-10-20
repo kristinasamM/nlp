@@ -31,8 +31,11 @@ STATIC_DIR = BASE_DIR / "static"
 SAMPLES_DIR = BASE_DIR / "sample_documents"
 
 # Ensure directories exist
-STATIC_DIR.mkdir(exist_ok=True)
-SAMPLES_DIR.mkdir(exist_ok=True)
+try:
+    STATIC_DIR.mkdir(exist_ok=True)
+    SAMPLES_DIR.mkdir(exist_ok=True)
+except Exception:
+    pass
 
 # Pre-load default sample document on startup
 default_sample = SAMPLES_DIR / "transformers_and_attention.txt"
@@ -94,9 +97,10 @@ async def process_document(payload: ProcessRequest):
 @app.post("/api/upload")
 async def upload_document(file: UploadFile = File(...)):
     """Upload PDF, Markdown, or TXT file and run pipeline."""
-    temp_path = BASE_DIR / "temp_upload"
-    temp_path.mkdir(exist_ok=True)
-    file_dest = temp_path / file.filename
+    import tempfile
+    temp_dir = Path(tempfile.gettempdir()) / "vivacraft_upload"
+    temp_dir.mkdir(parents=True, exist_ok=True)
+    file_dest = temp_dir / file.filename
 
     try:
         content = await file.read()
