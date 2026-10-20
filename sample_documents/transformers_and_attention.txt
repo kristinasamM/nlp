@@ -1,0 +1,32 @@
+# Scaled Dot-Product and Multi-Head Attention Mechanisms in Transformer Architectures
+Department of Computer Science & Engineering - Capstone Project Report
+
+## 1. Introduction and Architectural Motivation
+Sequential neural architectures such as Recurrent Neural Networks (RNNs) and Long Short-Term Memory (LSTM) networks have historically dominated sequence modeling tasks in Natural Language Processing. However, sequential models impose an inherent computational bottleneck: hidden state computation at time step t strictly depends on the antecedent hidden state at step t-1. This recurrent dependency precludes batch parallelization during training across long sequence contexts. Furthermore, gradient signals suffer from vanishing or exploding effects when propagating across extended recurrence steps, impairing the network's ability to retain long-range token relationships.
+
+The Transformer model eliminates recurrence entirely by adopting self-attention as the central mechanism for relating distinct positions within a single sequence. This design enables parallelized training across all token indices simultaneously and maintains constant path length between arbitrary token pairs, drastically improving gradient flow.
+
+## 2. Scaled Dot-Product Attention Formulation
+Scaled Dot-Product Attention operates on three vector matrices: Queries (Q), Keys (K), and Values (V). Given an input sequence representation, linear projection matrices transform token embeddings into query, key, and value subspaces of dimension d_k and d_v.
+
+The attention weight matrix is computed via the scaled dot-product formula:
+Attention(Q, K, V) = softmax( (Q * K^T) / sqrt(d_k) ) * V
+
+The scaling factor 1 / sqrt(d_k) is a critical numerical stability design choice. For large projection dimensions d_k, the dot products grow substantially in magnitude, pushing the softmax function into regions with extremely small gradient derivatives (the saturation zone). Dividing by sqrt(d_k) counteracts this variance growth, stabilizing gradient backpropagation during early training epochs.
+
+## 3. Multi-Head Attention and Representation Subspaces
+Rather than performing a single attention function with d_model dimensional queries, keys, and values, Multi-Head Attention linearly projects the queries, keys, and values h times with distinct, learned linear projections to dimensions d_k, d_k, and d_v respectively. On each of these projected versions of queries, keys, and values, the attention function is performed in parallel.
+
+Multi-Head Attention allows the model to jointly attend to information from different representation subspaces at different positions. A single attention head tends to average token representations across conflicting semantic contexts. With multiple heads (typically h = 8), individual heads can specialize in syntactic agreements, pronominal resolution, and lexical semantic affinities. The resulting multi-head vectors are concatenated and linearly projected back to the primary model dimension d_model.
+
+## 4. Positional Encoding and Sequence Order
+Because the Transformer architecture contains neither recurrence nor convolution, the self-attention operation is completely permutation-invariant. Swapping the positions of two words in the input would yield identical output sets without explicit positional cues.
+
+To incorporate token sequence order, fixed sinusoidal positional encodings are added directly to the input embeddings:
+PE(pos, 2i) = sin(pos / 10000^(2i / d_model))
+PE(pos, 2i+1) = cos(pos / 10000^(2i / d_model))
+
+This sinusoidal formulation allows the model to easily learn relative positions because for any fixed offset k, PE(pos + k) can be represented as a linear function of PE(pos). This geometric property permits generalization to sequence lengths beyond those encountered during training.
+
+## 5. Computational Complexity and Practical Limitations
+The principal trade-off in standard self-attention is its quadratic computational complexity O(n^2 * d) with respect to sequence length n. When processing extended document contexts exceeding 4096 tokens, GPU VRAM allocation increases rapidly due to the n x n attention weight matrix. While linear approximation techniques (such as FlashAttention or sparse kernels) alleviate this overhead, canonical self-attention remains resource-intensive for resource-constrained edge deployment.

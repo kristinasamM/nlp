@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VivaCraft | Your Viva Voce Study Companion</title>
+  <meta name="description" content="A clean, student-friendly viva preparation app. Upload your notes, create easy study notes, get viva questions, and practise at your own pace.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Lora:ital,wght@0,500;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+  <!-- ===================================================================
+       HEADER & NAVIGATION
+       =================================================================== -->
+  <header class="app-header">
+    <div class="header-inner">
+      <div class="brand-group">
+        <a href="#notes" class="brand-logo" id="brandLink">
+          <span class="brand-icon">🎓</span>
+          <span class="brand-name">VivaCraft</span>
+        </a>
+        <span class="brand-tag">Study Companion</span>
+      </div>
+
+      <!-- Main Navigation Tabs: My Notes, Easy Notes, Viva Questions, Practise Viva, My Progress -->
+      <nav class="main-nav" aria-label="Main Navigation">
+        <button class="nav-btn active" data-tab="tab-notes" id="navNotes">
+          <span class="nav-icon">📤</span> My Notes
+        </button>
+        <button class="nav-btn" data-tab="tab-easynotes" id="navEasyNotes">
+          <span class="nav-icon">📖</span> Easy Notes
+          <span class="nav-badge hidden" id="notesSectionsBadge">0</span>
+        </button>
+        <button class="nav-btn" data-tab="tab-questions" id="navQuestions">
+          <span class="nav-icon">💡</span> Viva Questions
+          <span class="nav-badge hidden" id="questionsCountBadge">0</span>
+        </button>
+        <button class="nav-btn" data-tab="tab-practice" id="navPractice">
+          <span class="nav-icon">🎙️</span> Practise Viva
+        </button>
+        <button class="nav-btn" data-tab="tab-progress" id="navProgress">
+          <span class="nav-icon">📊</span> My Progress
+          <span class="nav-badge revision-badge hidden" id="revisionCountBadge">0</span>
+        </button>
+      </nav>
+
+      <div class="header-actions">
+        <button class="btn-text btn-about" id="btnOpenAbout" title="Project and team information">
+          About
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ===================================================================
+       MAIN CONTAINER
+       =================================================================== -->
+  <main class="app-main">
+
+    <!-- =================================================================
+         SECTION 1: MY NOTES (PROMINENT UPLOAD & 3 OPTIONS)
+         ================================================================= -->
+    <section id="tab-notes" class="tab-pane active" aria-labelledby="navNotes">
+      
+      <!-- Welcome Hero -->
+      <div class="welcome-hero">
+        <h1 class="hero-title">Let’s get ready for your viva</h1>
+        <p class="hero-subtitle">Upload your notes, create easy revision summaries, and practise at your own pace.</p>
+      </div>
+
+      <div class="notes-workspace">
+        
+        <!-- Large, Prominent Upload Box (Always visible at the top of My Notes) -->
+        <div class="upload-card" id="uploadDropzone">
+          <div class="upload-icon-wrapper">
+            <span class="upload-icon">📚</span>
+          </div>
+          <h2 class="upload-heading">Upload your study material</h2>
+          <p class="upload-prompt">Add your PDF, Word document, or text file to create easy notes and viva questions.</p>
+          
+          <div class="upload-btn-row">
+            <label class="btn btn-primary btn-choose-file btn-lg" for="notesFileInput">
+              <span>Choose a file</span>
+              <input type="file" id="notesFileInput" accept=".pdf,.docx,.doc,.txt,.md" hidden>
+            </label>
+            <button class="btn btn-secondary" id="btnTogglePaste">Paste text</button>
+          </div>
+
+          <p class="upload-meta">Supported formats: PDF, Word (.docx), TXT, Markdown • Up to 10MB</p>
+          
+          <!-- Collapsible Paste Text Area -->
+          <div class="paste-text-drawer hidden" id="pasteDrawer">
+            <textarea id="pasteTextInput" class="paste-textarea" rows="6" placeholder="Paste your capstone report, revision summary, or chapter text here..."></textarea>
+            <div class="paste-actions">
+              <button class="btn btn-sm btn-secondary" id="btnCancelPaste">Cancel</button>
+              <button class="btn btn-sm btn-primary" id="btnSubmitPaste">Use this text</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sample Notes & Recent Notes -->
+        <div class="quick-notes-row">
+          <div class="sample-notes-picker">
+            <span class="picker-label">Try sample notes:</span>
+            <button class="sample-chip" data-sample="transformers_and_attention.txt">
+              Transformers & Attention (Capstone)
+            </button>
+            <button class="sample-chip" data-sample="distributed_systems_raft.txt">
+              Raft Consensus Algorithm (Coursework)
+            </button>
+          </div>
+
+          <!-- Recent Notes (shown only when available) -->
+          <div class="recent-notes-container hidden" id="recentNotesContainer">
+            <span class="picker-label">Recent notes:</span>
+            <div id="recentNotesChips" class="recent-chips-list"></div>
+          </div>
+        </div>
+
+        <!-- Document Actions Card (Visible after upload / when notes are loaded) -->
+        <div class="document-preview-card" id="docPreviewCard">
+          
+          <div class="doc-preview-header">
+            <div class="doc-icon-title">
+              <span class="doc-file-icon">📋</span>
+              <div>
+                <span class="preview-badge">Active Study Material</span>
+                <h3 class="doc-filename" id="docPreviewName">Transformers Capstone Report</h3>
+                <span class="doc-stats-line" id="docPreviewStats">615 words &bull; 5 sections</span>
+              </div>
+            </div>
+            <button class="btn-text btn-change-doc" id="btnChangeDoc">Upload different notes</button>
+          </div>
+
+          <div class="doc-snippet-box">
+            <span class="snippet-label">Notes preview:</span>
+            <p class="doc-snippet-text" id="docSnippetText">Loading preview...</p>
+          </div>
+
+          <!-- The 3 Core Options Requested by User -->
+          <div class="action-options-section">
+            <h3 class="action-options-title">What would you like to create?</h3>
+            <p class="action-options-subtitle">Choose how you want to prepare using your uploaded study material:</p>
+
+            <div class="options-cards-grid">
+              
+              <!-- Option 1: Make Easy Notes -->
+              <div class="option-card" id="cardOptionEasyNotes">
+                <div class="option-card-icon">📖</div>
+                <div class="option-card-body">
+                  <h4 class="option-card-title">1. Make Easy Notes</h4>
+                  <p class="option-card-desc">
+                    Organized by topics and headings with page references. Uses simple English, definitions, step-by-step mechanisms, formulas, and comparisons.
+                  </p>
+                </div>
+                <button class="btn btn-primary btn-option" id="btnMakeEasyNotes">
+                  Make Easy Notes &rarr;
+                </button>
+              </div>
+
+              <!-- Option 2: Create Viva Questions -->
+              <div class="option-card" id="cardOptionVivaQuestions">
+                <div class="option-card-icon">💡</div>
+                <div class="option-card-body">
+                  <h4 class="option-card-title">2. Create Viva Questions</h4>
+                  <p class="option-card-desc">
+                    Generates authentic viva voce questions categorized by Core Concepts, How It Works, and Trade-Offs with complete suggested answers.
+                  </p>
+                </div>
+                <button class="btn btn-secondary btn-option" id="btnMakeVivaQuestions">
+                  Create Questions &rarr;
+                </button>
+              </div>
+
+              <!-- Option 3: Make Both -->
+              <div class="option-card option-card-featured" id="cardOptionBoth">
+                <div class="option-card-badge">Recommended</div>
+                <div class="option-card-icon">🚀</div>
+                <div class="option-card-body">
+                  <h4 class="option-card-title">3. Make Both</h4>
+                  <p class="option-card-desc">
+                    Generate the complete revision toolkit in one click: structured Easy Notes to study and Viva Questions to test yourself.
+                  </p>
+                </div>
+                <button class="btn btn-primary btn-option btn-featured" id="btnMakeBoth">
+                  Make Both &rarr;
+                </button>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- Question Settings (Collapsible / Customizable) -->
+          <div class="question-settings-section">
+            <details class="more-options-details" id="settingsCustomizer">
+              <summary class="more-options-summary">
+                <span>Customize question settings (count, level & topics)</span>
+                <span class="summary-arrow">&#9662;</span>
+              </summary>
+              <div class="more-options-content">
+                
+                <div class="settings-grid">
+                  <div class="setting-group">
+                    <label class="setting-label">Number of questions:</label>
+                    <div class="segmented-control" id="countSelector" role="radiogroup">
+                      <button type="button" class="segment-btn active" data-count="5">5</button>
+                      <button type="button" class="segment-btn" data-count="10">10</button>
+                      <button type="button" class="segment-btn" data-count="15">15</button>
+                      <button type="button" class="segment-btn" data-count="20">20</button>
+                    </div>
+                  </div>
+
+                  <div class="setting-group">
+                    <label class="setting-label">
+                      Level:
+                      <span class="info-tooltip" title="Difficulty is estimated based on conceptual and architectural depth">&#9432;</span>
+                    </label>
+                    <div class="segmented-control" id="levelSelector" role="radiogroup">
+                      <button type="button" class="segment-btn" data-level="Easy">Easy</button>
+                      <button type="button" class="segment-btn" data-level="Medium">Medium</button>
+                      <button type="button" class="segment-btn" data-level="Challenging">Challenging</button>
+                      <button type="button" class="segment-btn active" data-level="Mixed">Mixed</button>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="detected-topics-box" style="margin-top: 1rem;">
+                  <span class="topics-title">Filter by topics (click to toggle):</span>
+                  <div class="topics-chips-cloud" id="detectedTopicsList"></div>
+                </div>
+
+              </div>
+            </details>
+          </div>
+
+        </div>
+
+        <!-- Progress State (Friendly loader) -->
+        <div class="friendly-loader-box hidden" id="friendlyLoader">
+          <div class="spinner-ring"></div>
+          <p class="loader-stage-text" id="loaderStageText">Reading your notes…</p>
+          <p class="loader-subtext">This takes just a few seconds on your device.</p>
+        </div>
+
+        <!-- 3-Step Simple Explanation -->
+        <div class="three-steps-card" id="threeStepsCard">
+          <h3 class="steps-heading">How VivaCraft helps you prepare</h3>
+          <div class="steps-grid">
+            <div class="step-item">
+              <div class="step-number">1</div>
+              <h4 class="step-title">Upload notes</h4>
+              <p class="step-desc">Add your capstone report, coursework, or slides in PDF, Word, or TXT.</p>
+            </div>
+            <div class="step-item">
+              <div class="step-number">2</div>
+              <h4 class="step-title">Study easy notes</h4>
+              <p class="step-desc">Read plain-English summaries, definitions, formulas, and working steps with page references.</p>
+            </div>
+            <div class="step-item">
+              <div class="step-number">3</div>
+              <h4 class="step-title">Practise viva questions</h4>
+              <p class="step-desc">Test your understanding with realistic oral exam questions and get respectful feedback.</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- =================================================================
+         SECTION 2: EASY NOTES (STUDY TAB)
+         ================================================================= -->
+    <section id="tab-easynotes" class="tab-pane" aria-labelledby="navEasyNotes">
+      
+      <!-- Top Bar with Actions -->
+      <div class="easynotes-header-bar">
+        <div>
+          <span class="badge badge-section-tag" id="notesDocBadge">Active Notes</span>
+          <h2 class="section-heading" id="notesDocHeading">Easy Study Notes</h2>
+          <p class="section-subtext" id="notesDocSubtext">
+            Organized by document topics and headings with exact page references.
+          </p>
+        </div>
+
+        <div class="easynotes-actions-group">
+          <!-- Download Options -->
+          <a href="/api/download-notes-pdf" class="btn btn-primary" id="btnDownloadNotesPdf" download>
+            <span>📥 Download notes as PDF</span>
+          </a>
+          <button class="btn btn-secondary" id="btnGoToQuestionsFromNotes">
+            <span>💡 Generate viva questions</span>
+          </button>
+          <button class="btn btn-outline" id="btnStartPracticeFromNotes">
+            <span>🎙️ Start viva practice</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Layout with Quick TOC and Section Notes -->
+      <div class="easynotes-layout">
+        
+        <!-- Sidebar Navigation (Table of Contents) -->
+        <aside class="easynotes-toc-sidebar">
+          <div class="toc-header">
+            <span class="toc-icon">📑</span>
+            <span class="toc-title">Table of Contents</span>
+          </div>
+          <nav class="toc-nav" id="notesTocNav">
+            <!-- TOC links generated dynamically -->
+          </nav>
+        </aside>
+
+        <!-- Main Notes Content Container -->
+        <div class="easynotes-content-area" id="notesContentContainer">
+          <!-- Rendered Section Note Cards -->
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- =================================================================
+         SECTION 3: VIVA QUESTIONS (STUDY QUESTION SET)
+         ================================================================= -->
+    <section id="tab-questions" class="tab-pane" aria-labelledby="navQuestions">
+      
+      <div class="questions-header-bar">
+        <div>
+          <h2 class="section-heading">Viva Questions</h2>
+          <p class="section-subtext" id="questionsSetSubtext">Review your questions, check suggested answers, and save items for revision.</p>
+        </div>
+
+        <div class="questions-top-actions">
+          <button class="btn btn-primary" id="btnStartPracticeFromSet">
+            <span>Practise these questions</span>
+          </button>
+          
+          <!-- Download dropdown -->
+          <div class="dropdown-wrapper">
+            <button class="btn btn-secondary" id="btnDownloadMenu">
+              <span>Download &dtrif;</span>
+            </button>
+            <div class="dropdown-menu hidden" id="downloadDropdown">
+              <a href="/api/download?include_answers=false" class="dropdown-item" download>Questions only (.txt)</a>
+              <a href="/api/download?include_answers=true" class="dropdown-item" download>Questions & answers (.txt)</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Search & Topic Filter -->
+      <div class="questions-controls-bar">
+        <div class="search-input-wrapper">
+          <span class="search-icon">🔍</span>
+          <input type="search" id="inputSearchQuestions" class="search-field" placeholder="Search questions or topics...">
+        </div>
+
+        <div class="topic-filter-wrapper">
+          <label for="filterTopicSelect" class="filter-label">Topic:</label>
+          <select id="filterTopicSelect" class="clean-select">
+            <option value="all">All topics</option>
+          </select>
+        </div>
+
+        <div class="level-filter-wrapper">
+          <label for="filterLevelSelect" class="filter-label">Level:</label>
+          <select id="filterLevelSelect" class="clean-select">
+            <option value="all">All levels</option>
+            <option value="Easy">Easy</option>
+            <option value="Medium">Medium</option>
+            <option value="Challenging">Challenging</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Questions List Container -->
+      <div class="questions-card-list" id="questionsListContainer">
+        <!-- Question cards dynamically rendered here -->
+      </div>
+
+    </section>
+
+    <!-- =================================================================
+         SECTION 4: PRACTISE VIVA (FOCUSED 1-BY-1 PRACTICE)
+         ================================================================= -->
+    <section id="tab-practice" class="tab-pane" aria-labelledby="navPractice">
+      
+      <div class="practice-narrow-container">
+
+        <!-- Practice Card -->
+        <div class="practice-card" id="practiceQuestionCard">
+          
+          <!-- Top progress and topic -->
+          <div class="practice-top-bar">
+            <div class="practice-progress-group">
+              <span class="practice-counter" id="practiceCounter">Question 1 of 5</span>
+              <div class="practice-progress-bar">
+                <div class="practice-progress-fill" id="practiceProgressFill" style="width: 20%;"></div>
+              </div>
+            </div>
+            <div class="practice-tags">
+              <span class="practice-topic-badge" id="practiceTopicBadge">Attention Mechanism</span>
+              <span class="practice-level-badge" id="practiceLevelBadge">Medium</span>
+            </div>
+          </div>
+
+          <!-- Question Prompt -->
+          <h2 class="practice-question-text" id="practiceQuestionPrompt">
+            Loading your question...
+          </h2>
+
+          <!-- Collapsible Study Tip -->
+          <div class="practice-tip-accordion">
+            <button class="tip-toggle-btn" id="btnTogglePracticeHint" type="button">
+              <span>💡 How to structure this answer</span>
+              <span class="tip-arrow" id="tipArrow">&#9662;</span>
+            </button>
+            <div class="tip-drawer hidden" id="practiceHintDrawer">
+              <p class="tip-line" id="practiceTipIntuition">Start with the intuition in 1-2 sentences.</p>
+              <ul class="tip-bullets" id="practiceExpectedPointsList">
+                <li>Key point to mention</li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- Answer Field -->
+          <div class="practice-input-group">
+            <div class="input-header-row">
+              <label for="practiceAnswerInput" class="input-label">Your answer:</label>
+              <button class="btn btn-sm btn-dictate" id="btnPracticeDictate" type="button" title="Speak your answer using voice dictation">
+                <span class="dictate-icon">🎤</span>
+                <span id="dictateStatusText">Speak answer</span>
+              </button>
+            </div>
+
+            <textarea 
+              id="practiceAnswerInput" 
+              class="practice-textarea" 
+              rows="6" 
+              placeholder="Type your answer in your own words…"
+            ></textarea>
+
+            <div class="word-counter-line">
+              <span id="practiceWordCount">0</span> words &bull; Speak or type as you would explain to an examiner.
+            </div>
+          </div>
+
+          <!-- Practice Actions Row -->
+          <div class="practice-actions-row">
+            <div class="secondary-actions">
+              <button class="btn btn-secondary" id="btnSkipPractice">Skip for now</button>
+              <button class="btn-text" id="btnFinishPracticeEarly">Finish practice</button>
+            </div>
+            <button class="btn btn-primary btn-check" id="btnCheckAnswer">
+              <span>Check my answer</span>
+            </button>
+          </div>
+
+        </div>
+
+        <!-- Practice Feedback Card (Revealed after submission) -->
+        <div class="practice-feedback-card hidden" id="practiceFeedbackCard">
+          
+          <!-- Respectful Feedback Headline -->
+          <div class="feedback-verdict-box">
+            <span class="verdict-icon" id="verdictIcon">👍</span>
+            <div>
+              <h3 class="verdict-headline" id="verdictHeadline">You covered the main idea.</h3>
+              <p class="verdict-subtext" id="verdictSubtext">Here is a quick look at what was mentioned and what you can add.</p>
+            </div>
+          </div>
+
+          <!-- 2 Buckets: What you covered & What to add -->
+          <div class="feedback-split-grid">
+            
+            <div class="feedback-bucket bucket-covered">
+              <div class="bucket-header">
+                <span class="bucket-badge">&#10003;</span>
+                <h4 class="bucket-title">What you covered</h4>
+              </div>
+              <ul class="points-list" id="feedbackCoveredList">
+                <li>Core concepts detected</li>
+              </ul>
+            </div>
+
+            <div class="feedback-bucket bucket-missing">
+              <div class="bucket-header">
+                <span class="bucket-badge">&#9888;</span>
+                <h4 class="bucket-title">What to add</h4>
+              </div>
+              <ul class="points-list" id="feedbackMissingList">
+                <li>Points to consider mentioning</li>
+              </ul>
+            </div>
+
+          </div>
+
+          <!-- Suggested Answer -->
+          <div class="suggested-answer-box">
+            <div class="suggested-header">
+              <span class="suggested-icon">📖</span>
+              <h4 class="suggested-title">Suggested answer (from your notes)</h4>
+            </div>
+            <p class="suggested-text" id="feedbackSuggestedAnswer">
+              Suggested answer text will appear here.
+            </p>
+          </div>
+
+          <!-- Grounding Reference -->
+          <div class="feedback-footer-row">
+            <button class="btn-text btn-find-in-notes" id="btnFeedbackFindInNotes">
+              📍 Find it in your notes &rarr;
+            </button>
+            <p class="feedback-disclaimer">
+              Feedback is a study aid and may sometimes miss a correct answer.
+            </p>
+          </div>
+
+          <!-- Proceed Button -->
+          <div class="feedback-proceed-row">
+            <button class="btn btn-primary btn-lg" id="btnNextPracticeQuestion">
+              <span>Next question &rarr;</span>
+            </button>
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- =================================================================
+         SECTION 5: MY PROGRESS (RESULTS & REVISION)
+         ================================================================= -->
+    <section id="tab-progress" class="tab-pane" aria-labelledby="navProgress">
+      
+      <div class="progress-container">
+        
+        <div class="progress-hero">
+          <h2 class="progress-title">Here’s how your practice went</h2>
+          <p class="progress-subtext" id="progressSessionSubtext">Summary of your current practice session and revision topics.</p>
+        </div>
+
+        <!-- Real Stats Row -->
+        <div class="summary-stats-grid">
+          <div class="stat-card">
+            <span class="stat-number" id="statAnswered">0</span>
+            <span class="stat-label">Questions answered</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-number" id="statSkipped">0</span>
+            <span class="stat-label">Questions skipped</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-number stat-green" id="statCoveredCount">0</span>
+            <span class="stat-label">Topics covered well</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-number stat-amber" id="statReviseCount">0</span>
+            <span class="stat-label">Topics to revise</span>
+          </div>
+        </div>
+
+        <!-- Topics Covered Well vs Topics to Revise -->
+        <div class="progress-topics-split">
+          
+          <div class="card topics-progress-card">
+            <h3 class="card-title text-success">
+              <span>&#10003;</span> Topics you covered well
+            </h3>
+            <div id="topicsWellList" class="topics-tags-cloud">
+              <span class="empty-state-text">Complete questions in practice to see topics covered well.</span>
+            </div>
+          </div>
+
+          <div class="card topics-progress-card">
+            <h3 class="card-title text-amber">
+              <span>💡</span> Topics to revise
+            </h3>
+            <div id="topicsToReviseList" class="topics-tags-cloud">
+              <span class="empty-state-text">No topics flagged for revision yet.</span>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Primary Session Action Buttons -->
+        <div class="progress-actions-bar">
+          <button class="btn btn-primary" id="btnProgressRevise">
+            <span>Revise these topics</span>
+          </button>
+          <button class="btn btn-secondary" id="btnProgressTryAgain">
+            <span>Try again</span>
+          </button>
+          <button class="btn btn-secondary" id="btnProgressReviewAnswers">
+            <span>Review my answers</span>
+          </button>
+        </div>
+
+        <!-- Saved for Revision Section (Persisted in localStorage) -->
+        <div class="card saved-revision-card">
+          <div class="revision-header">
+            <div>
+              <h3 class="card-title">
+                <span>⭐</span> Saved for revision (<span id="savedRevisionCount">0</span>)
+              </h3>
+              <p class="revision-subtext">Questions you bookmarked during study to revisit before your viva.</p>
+            </div>
+            <button class="btn btn-sm btn-outline" id="btnPracticeSaved" disabled>
+              Practise saved questions
+            </button>
+          </div>
+
+          <div class="saved-questions-list" id="savedRevisionList">
+            <p class="empty-saved-note" id="emptySavedNote">
+              No questions saved for revision yet. Click <strong>"Save for revision"</strong> on any question card in the Viva Questions tab to keep them here.
+            </p>
+          </div>
+        </div>
+
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- ===================================================================
+       MODAL: FIND IT IN YOUR NOTES (SUPPORTING PASSAGE)
+       =================================================================== -->
+  <div class="modal-backdrop hidden" id="notesCitationModal" role="dialog" aria-modal="true" aria-labelledby="modalCitationTitle">
+    <div class="modal-card modal-citation">
+      <div class="modal-header">
+        <div>
+          <span class="modal-eyebrow">Find it in your notes</span>
+          <h3 class="modal-title" id="modalCitationTitle">Section: Scaled Dot-Product Attention</h3>
+        </div>
+        <button class="modal-close-btn" id="btnCloseCitationModal" aria-label="Close dialog">&times;</button>
+      </div>
+
+      <div class="modal-body">
+        <div class="exact-quote-callout">
+          <span class="callout-label">Exact supporting sentence from your notes:</span>
+          <blockquote class="callout-quote" id="modalCitationQuote">
+            "Loading supporting passage..."
+          </blockquote>
+        </div>
+
+        <div class="full-context-section">
+          <span class="context-label">Surrounding section context:</span>
+          <p class="context-paragraph" id="modalCitationContext">
+            Context will be shown here.
+          </p>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-secondary" id="btnDismissCitation">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================================================================
+       MODAL: ABOUT VIVACRAFT & TEAM
+       =================================================================== -->
+  <div class="modal-backdrop hidden" id="aboutModal" role="dialog" aria-modal="true" aria-labelledby="modalAboutTitle">
+    <div class="modal-card modal-about">
+      <div class="modal-header">
+        <div>
+          <span class="modal-eyebrow">Project Information</span>
+          <h3 class="modal-title" id="modalAboutTitle">About VivaCraft</h3>
+        </div>
+        <button class="modal-close-btn" id="btnCloseAboutModal" aria-label="Close dialog">&times;</button>
+      </div>
+
+      <div class="modal-body">
+        <p class="about-lead">
+          <strong>VivaCraft</strong> is an authentic, student-built study companion and oral exam (viva voce) preparation system. Designed by engineering students to make preparing for your project defense calm, organized, and effective.
+        </p>
+
+        <h4 class="about-section-heading">Team Contributions</h4>
+        <div class="team-grid">
+          <div class="team-member-card">
+            <span class="member-avatar">👩‍💻</span>
+            <div>
+              <strong class="member-name">Komal</strong>
+              <span class="member-role">Reading notes & finding topics</span>
+              <p class="member-desc">Document ingestion, clean sentence boundary detection, Flesch readability, Easy Notes generation with page references, and TF-IDF / TextRank keyphrase extraction.</p>
+            </div>
+          </div>
+
+          <div class="team-member-card">
+            <span class="member-avatar">👩‍💻</span>
+            <div>
+              <strong class="member-name">Anushka</strong>
+              <span class="member-role">Creating questions & supported answers</span>
+              <p class="member-desc">Bloom's Taxonomy question synthesis, concise suggested answers, and semantic deduplication to avoid repetitive prompts.</p>
+            </div>
+          </div>
+
+          <div class="team-member-card">
+            <span class="member-avatar">👩‍💻</span>
+            <div>
+              <strong class="member-name">Kristina</strong>
+              <span class="member-role">Practice feedback & revision suggestions</span>
+              <p class="member-desc">Multi-criteria answer assessment (concept recall, semantic cosine alignment, reasoning markers), what to add, and revision tracking.</p>
+            </div>
+          </div>
+
+          <div class="team-member-card">
+            <span class="member-avatar">👨‍💻</span>
+            <div>
+              <strong class="member-name">Parth</strong>
+              <span class="member-role">Interface, navigation & downloads</span>
+              <p class="member-desc">Student-friendly study workflow, voice dictation, persistent revision storage, and publication-quality PDF exports.</p>
+            </div>
+          </div>
+        </div>
+
+        <details class="tech-details-accordion">
+          <summary class="tech-summary">
+            <span>Behind the scenes (NLP Pipeline Details)</span>
+            <span class="summary-arrow">&#9662;</span>
+          </summary>
+          <div class="tech-body">
+            <p><strong>Offline & Deterministic:</strong> VivaCraft runs standard, explainable NLP algorithms (TF-IDF, PageRank graph centrality, Porter Stemming, and Cosine similarity). It requires no external API keys or cloud GPUs, ensuring complete privacy for your unpublished project notes.</p>
+            <p><strong>Fair Scoring:</strong> Evaluates answers using stemmed concept matching so conversational spoken answers are graded fairly on meaning rather than rote textbook phrasing.</p>
+          </div>
+        </details>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-secondary" id="btnDismissAbout">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div class="toast hidden" id="appToast">
+    <span id="toastMessage">Saved for revision</span>
+  </div>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>

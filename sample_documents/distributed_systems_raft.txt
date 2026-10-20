@@ -1,0 +1,27 @@
+# Consensus Protocols and Leader Election in Distributed Systems: The Raft Algorithm
+Department of Information Technology - Distributed Computing Coursework
+
+## 1. The Distributed Consensus Challenge
+In distributed systems, consensus involves multiple independent server nodes agreeing on values or state transitions despite asynchronous communication networks and server fail-stop crashes. Classic consensus protocols such as Paxos are notoriously difficult to understand and implement in real-world clusters due to symmetric architectures and non-intuitive multi-phase commits.
+
+The Raft consensus algorithm was developed with understandability as a primary engineering objective. Raft decomposes consensus into three decomposed subproblems: leader election, log replication, and safety guarantees. At any given moment, each server node in a Raft cluster exists in one of three states: Leader, Follower, or Candidate.
+
+## 2. Leader Election and Randomized Heartbeat Timeouts
+Under steady-state conditions, exactly one server node acts as the Leader, servicing all client write operations. The Leader periodically broadcasts empty AppendEntries Remote Procedure Calls (heartbeats) to all follower nodes to maintain its authority.
+
+If a Follower node fails to receive a heartbeat within its election timeout (typically randomized between 150ms and 300ms), it infers that the Leader has crashed or become partitioned. The Follower increments its current term counter, transitions to Candidate state, votes for itself, and broadcasts RequestVote RPCs to all peers.
+
+Randomization of the election timeout is a foundational mechanism in Raft. It spreads election attempts across time, ensuring that split-vote scenarios—where multiple candidates divide votes equally—are rare and quickly resolved in subsequent rounds. A Candidate wins an election if it receives votes from a strict quorum majority (N/2 + 1) of cluster nodes.
+
+## 3. Log Replication and State Machine Consistency
+Once a Leader is elected, client proposals are appended directly to the Leader's local write-ahead log as uncommitted log entries. The Leader forwards these entries to all Followers via AppendEntries RPCs.
+
+When the Leader verifies that an entry has been securely replicated across a majority of servers, it marks that entry as committed. The Leader then applies the committed entry to its local deterministic state machine and returns the execution result to the client. During future heartbeat broadcasts, followers learn of the new commit index and apply the corresponding entries to their local state machines in the identical sequence order.
+
+## 4. Safety Invariants and Byzantine Limitations
+Raft enforces strict safety invariants to ensure that no two nodes ever commit differing log entries at the same index:
+- Election Safety: At most one leader can be elected in a given term.
+- Leader Append-Only: A leader never overwrites or truncates its own log entries.
+- Log Matching Property: If two logs contain an entry with the same index and term, then the logs are identical in all entries up through the given index.
+
+Crucially, Raft operates under a crash-recovery fault-tolerant model (CFT). It assumes non-malicious nodes communicating over lossy or delayed networks. Raft cannot tolerate Byzantine failures where malicious nodes forge RPC messages, send conflicting votes, or lie about log contents.
