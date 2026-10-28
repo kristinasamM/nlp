@@ -19,7 +19,6 @@
     <div class="header-inner">
       <div class="brand-group">
         <a href="#notes" class="brand-logo" id="brandLink">
-          <span class="brand-icon">🎓</span>
           <span class="brand-name">VivaCraft</span>
         </a>
         <span class="brand-tag">Study Companion</span>
@@ -28,21 +27,21 @@
       <!-- Main Navigation Tabs: My Notes, Easy Notes, Viva Questions, Practise Viva, My Progress -->
       <nav class="main-nav" aria-label="Main Navigation">
         <button class="nav-btn active" data-tab="tab-notes" id="navNotes">
-          <span class="nav-icon">📤</span> My Notes
+          My Notes
         </button>
         <button class="nav-btn" data-tab="tab-easynotes" id="navEasyNotes">
-          <span class="nav-icon">📖</span> Easy Notes
+          Easy Notes
           <span class="nav-badge hidden" id="notesSectionsBadge">0</span>
         </button>
         <button class="nav-btn" data-tab="tab-questions" id="navQuestions">
-          <span class="nav-icon">💡</span> Viva Questions
+          Viva Questions
           <span class="nav-badge hidden" id="questionsCountBadge">0</span>
         </button>
         <button class="nav-btn" data-tab="tab-practice" id="navPractice">
-          <span class="nav-icon">🎙️</span> Practise Viva
+          Practise Viva
         </button>
         <button class="nav-btn" data-tab="tab-progress" id="navProgress">
-          <span class="nav-icon">📊</span> My Progress
+          My Progress
           <span class="nav-badge revision-badge hidden" id="revisionCountBadge">0</span>
         </button>
       </nav>
@@ -75,9 +74,6 @@
         
         <!-- Large, Prominent Upload Box (Always visible at the top of My Notes) -->
         <div class="upload-card" id="uploadDropzone">
-          <div class="upload-icon-wrapper">
-            <span class="upload-icon">📚</span>
-          </div>
           <h2 class="upload-heading">Upload your study material</h2>
           <p class="upload-prompt">Add your PDF, Word document, or text file to create easy notes and viva questions.</p>
           
@@ -125,7 +121,6 @@
           
           <div class="doc-preview-header">
             <div class="doc-icon-title">
-              <span class="doc-file-icon">📋</span>
               <div>
                 <span class="preview-badge">Active Study Material</span>
                 <h3 class="doc-filename" id="docPreviewName">Transformers Capstone Report</h3>
@@ -149,7 +144,6 @@
               
               <!-- Option 1: Make Easy Notes -->
               <div class="option-card" id="cardOptionEasyNotes">
-                <div class="option-card-icon">📖</div>
                 <div class="option-card-body">
                   <h4 class="option-card-title">1. Make Easy Notes</h4>
                   <p class="option-card-desc">
@@ -163,7 +157,6 @@
 
               <!-- Option 2: Create Viva Questions -->
               <div class="option-card" id="cardOptionVivaQuestions">
-                <div class="option-card-icon">💡</div>
                 <div class="option-card-body">
                   <h4 class="option-card-title">2. Create Viva Questions</h4>
                   <p class="option-card-desc">
@@ -178,7 +171,6 @@
               <!-- Option 3: Make Both -->
               <div class="option-card option-card-featured" id="cardOptionBoth">
                 <div class="option-card-badge">Recommended</div>
-                <div class="option-card-icon">🚀</div>
                 <div class="option-card-body">
                   <h4 class="option-card-title">3. Make Both</h4>
                   <p class="option-card-desc">
@@ -289,13 +281,13 @@
         <div class="easynotes-actions-group">
           <!-- Download Options -->
           <a href="/api/download-notes-pdf" class="btn btn-primary" id="btnDownloadNotesPdf" download>
-            <span>📥 Download notes as PDF</span>
+            <span>Download notes as PDF</span>
           </a>
           <button class="btn btn-secondary" id="btnGoToQuestionsFromNotes">
-            <span>💡 Generate viva questions</span>
+            <span>Generate viva questions</span>
           </button>
           <button class="btn btn-outline" id="btnStartPracticeFromNotes">
-            <span>🎙️ Start viva practice</span>
+            <span>Start viva practice</span>
           </button>
         </div>
       </div>
@@ -306,7 +298,6 @@
         <!-- Sidebar Navigation (Table of Contents) -->
         <aside class="easynotes-toc-sidebar">
           <div class="toc-header">
-            <span class="toc-icon">📑</span>
             <span class="toc-title">Table of Contents</span>
           </div>
           <nav class="toc-nav" id="notesTocNav">
@@ -355,7 +346,6 @@
       <!-- Search & Topic Filter -->
       <div class="questions-controls-bar">
         <div class="search-input-wrapper">
-          <span class="search-icon">🔍</span>
           <input type="search" id="inputSearchQuestions" class="search-field" placeholder="Search questions or topics...">
         </div>
 
@@ -416,7 +406,7 @@
           <!-- Collapsible Study Tip -->
           <div class="practice-tip-accordion">
             <button class="tip-toggle-btn" id="btnTogglePracticeHint" type="button">
-              <span>💡 How to structure this answer</span>
+              <span>How to structure this answer</span>
               <span class="tip-arrow" id="tipArrow">&#9662;</span>
             </button>
             <div class="tip-drawer hidden" id="practiceHintDrawer">
@@ -432,7 +422,6 @@
             <div class="input-header-row">
               <label for="practiceAnswerInput" class="input-label">Your answer:</label>
               <button class="btn btn-sm btn-dictate" id="btnPracticeDictate" type="button" title="Speak your answer using voice dictation">
-                <span class="dictate-icon">🎤</span>
                 <span id="dictateStatusText">Speak answer</span>
               </button>
             </div>
@@ -467,7 +456,7 @@
           
           <!-- Respectful Feedback Headline -->
           <div class="feedback-verdict-box">
-            <span class="verdict-icon" id="verdictIcon">👍</span>
+            <span class="verdict-icon hidden" id="verdictIcon"></span>
             <div>
               <h3 class="verdict-headline" id="verdictHeadline">You covered the main idea.</h3>
               <p class="verdict-subtext" id="verdictSubtext">Here is a quick look at what was mentioned and what you can add.</p>
@@ -479,7 +468,6 @@
             
             <div class="feedback-bucket bucket-covered">
               <div class="bucket-header">
-                <span class="bucket-badge">&#10003;</span>
                 <h4 class="bucket-title">What you covered</h4>
               </div>
               <ul class="points-list" id="feedbackCoveredList">
@@ -489,7 +477,6 @@
 
             <div class="feedback-bucket bucket-missing">
               <div class="bucket-header">
-                <span class="bucket-badge">&#9888;</span>
                 <h4 class="bucket-title">What to add</h4>
               </div>
               <ul class="points-list" id="feedbackMissingList">
@@ -502,7 +489,6 @@
           <!-- Suggested Answer -->
           <div class="suggested-answer-box">
             <div class="suggested-header">
-              <span class="suggested-icon">📖</span>
               <h4 class="suggested-title">Suggested answer (from your notes)</h4>
             </div>
             <p class="suggested-text" id="feedbackSuggestedAnswer">
@@ -513,7 +499,7 @@
           <!-- Grounding Reference -->
           <div class="feedback-footer-row">
             <button class="btn-text btn-find-in-notes" id="btnFeedbackFindInNotes">
-              📍 Find it in your notes &rarr;
+              Find it in your notes &rarr;
             </button>
             <p class="feedback-disclaimer">
               Feedback is a study aid and may sometimes miss a correct answer.
@@ -579,7 +565,7 @@
 
           <div class="card topics-progress-card">
             <h3 class="card-title text-amber">
-              <span>💡</span> Topics to revise
+              Topics to revise
             </h3>
             <div id="topicsToReviseList" class="topics-tags-cloud">
               <span class="empty-state-text">No topics flagged for revision yet.</span>
@@ -606,7 +592,7 @@
           <div class="revision-header">
             <div>
               <h3 class="card-title">
-                <span>⭐</span> Saved for revision (<span id="savedRevisionCount">0</span>)
+                Saved for revision (<span id="savedRevisionCount">0</span>)
               </h3>
               <p class="revision-subtext">Questions you bookmarked during study to revisit before your viva.</p>
             </div>
@@ -684,7 +670,6 @@
         <h4 class="about-section-heading">Team Contributions</h4>
         <div class="team-grid">
           <div class="team-member-card">
-            <span class="member-avatar">👩‍💻</span>
             <div>
               <strong class="member-name">Komal</strong>
               <span class="member-role">Reading notes & finding topics</span>
@@ -693,7 +678,6 @@
           </div>
 
           <div class="team-member-card">
-            <span class="member-avatar">👩‍💻</span>
             <div>
               <strong class="member-name">Anushka</strong>
               <span class="member-role">Creating questions & supported answers</span>
@@ -702,7 +686,6 @@
           </div>
 
           <div class="team-member-card">
-            <span class="member-avatar">👩‍💻</span>
             <div>
               <strong class="member-name">Kristina</strong>
               <span class="member-role">Practice feedback & revision suggestions</span>
@@ -711,7 +694,6 @@
           </div>
 
           <div class="team-member-card">
-            <span class="member-avatar">👨‍💻</span>
             <div>
               <strong class="member-name">Parth</strong>
               <span class="member-role">Interface, navigation & downloads</span>

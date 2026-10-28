@@ -414,7 +414,7 @@ class EasyNotesGenerator:
         for sec in notes_data.get("sections", []):
             lines.append(f"## {sec['heading']} ({sec['page_ref']})")
             if sec.get("is_unreadable"):
-                lines.append("⚠️ This page could not be read clearly (scanned image or insufficient text).")
+                lines.append("Note: This page could not be read clearly (scanned image or insufficient text).")
                 lines.append("")
                 continue
 
@@ -455,7 +455,7 @@ class EasyNotesGenerator:
                 lines.append("")
 
             if sec.get("viva_focus"):
-                lines.append(f"💡 {sec['viva_focus']}")
+                lines.append(f"Viva Tip: {sec['viva_focus']}")
             lines.append("-" * 50)
             lines.append("")
 
@@ -636,7 +636,7 @@ class EasyNotesGenerator:
             # Viva Focus Tip
             viva_focus = sec.get("viva_focus") or sec.get("key_takeaway", "")
             if viva_focus:
-                flowables.append(Paragraph(f"💡 <b>{viva_focus}</b>", tip_style))
+                flowables.append(Paragraph(f"<b>{viva_focus}</b>", tip_style))
 
             flowables.append(HRFlowable(width="100%", thickness=0.5, color=colors.HexColor('#e7e5e1'), spaceBefore=8, spaceAfter=8))
 

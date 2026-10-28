@@ -499,7 +499,7 @@
             <span class="page-ref-badge">${escapeHTML(sec.page_ref)}</span>
           </div>
           <div class="unreadable-warning-card">
-            <strong>⚠️ Note:</strong> This page could not be read clearly (scanned image or insufficient text). Try providing selectable text.
+            <strong>Note:</strong> This page could not be read clearly (scanned image or insufficient text). Try providing selectable text.
           </div>
         `;
         DOM.notesContentContainer.appendChild(card);
@@ -521,7 +521,7 @@
       if (pointsList && pointsList.length) {
         pointsHTML = `
           <div class="note-block">
-            <h4 class="note-block-title"><span>📌</span> Important Points</h4>
+            <h4 class="note-block-title">Important Points</h4>
             <div class="definitions-list">
               ${pointsList.map(pt => `
                 <div class="definition-item">
@@ -539,7 +539,7 @@
       if (sec.working_steps && sec.working_steps.length) {
         stepsHTML = `
           <div class="note-block">
-            <h4 class="note-block-title"><span>⚙️</span> How It Works (Step-by-Step)</h4>
+            <h4 class="note-block-title">How It Works (Step-by-Step)</h4>
             <ol class="note-bullet-list">
               ${sec.working_steps.map(step => `<li>${escapeHTML(step)}</li>`).join('')}
             </ol>
@@ -552,7 +552,7 @@
       if (sec.formulas && sec.formulas.length) {
         formulasHTML = `
           <div class="note-block">
-            <h4 class="note-block-title"><span>📐</span> Key Formulas & Equations</h4>
+            <h4 class="note-block-title">Key Formulas & Equations</h4>
             ${sec.formulas.map(f => {
               if (typeof f === 'object' && f !== null) {
                 return `
@@ -573,7 +573,7 @@
       if (sec.comparisons && sec.comparisons.length) {
         comparisonsHTML = `
           <div class="note-block">
-            <h4 class="note-block-title"><span>⚖️</span> Comparisons & Trade-offs</h4>
+            <h4 class="note-block-title">Comparisons & Trade-offs</h4>
             <div class="comparisons-card">
               ${sec.comparisons.map(c => {
                 if (typeof c === 'object' && c !== null) {
@@ -597,7 +597,7 @@
       if (tipText) {
         tipHTML = `
           <div class="viva-tip-card">
-            <strong>💡 ${escapeHTML(tipText)}</strong>
+            <strong>${escapeHTML(tipText)}</strong>
           </div>
         `;
       }
@@ -694,7 +694,6 @@
             <span class="q-level-tag ${levelClass}">${escapeHTML(q.difficulty || 'Medium')}</span>
           </div>
           <button class="btn-bookmark ${isSaved ? 'saved' : ''}" data-id="${q.question_id}" title="Save for revision">
-            <span>${isSaved ? '★' : '☆'}</span>
             <span>${isSaved ? 'Saved' : 'Save for revision'}</span>
           </button>
         </div>
@@ -871,13 +870,13 @@
     const verdict = evalData.verdict_message || 'You covered the main idea.';
     DOM.verdictHeadline.textContent = verdict;
     if (verdict.includes('main idea')) {
-      DOM.verdictIcon.textContent = '🌟';
+      DOM.verdictIcon.textContent = '';
       DOM.verdictSubtext.textContent = 'Well done! You articulated the core intuition clearly.';
     } else if (verdict.includes('Good start')) {
-      DOM.verdictIcon.textContent = '👍';
+      DOM.verdictIcon.textContent = '';
       DOM.verdictSubtext.textContent = 'Good progress. Consider adding how the mechanism functions step-by-step.';
     } else {
-      DOM.verdictIcon.textContent = '💡';
+      DOM.verdictIcon.textContent = '';
       DOM.verdictSubtext.textContent = 'Review this section in your notes and try answering again.';
     }
 
@@ -950,7 +949,7 @@
       state.sessionStats.topicsWell.forEach(topic => {
         const tag = document.createElement('span');
         tag.className = 'progress-topic-tag tag-good';
-        tag.textContent = `✓ ${topic}`;
+        tag.textContent = topic;
         DOM.topicsWellList.appendChild(tag);
       });
     } else {
@@ -962,7 +961,7 @@
       state.sessionStats.topicsRevise.forEach(topic => {
         const tag = document.createElement('span');
         tag.className = 'progress-topic-tag tag-revise';
-        tag.textContent = `💡 ${topic}`;
+        tag.textContent = topic;
         DOM.topicsToReviseList.appendChild(tag);
       });
     } else {
