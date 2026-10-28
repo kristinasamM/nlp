@@ -53,8 +53,14 @@ Built with an offline, transparent NLP pipeline by a 4-person student team:
 
 ## Quick Start
 
-### 1. Requirements
-Ensure Python 3.9+ is installed. Install the dependencies:
+### 1. Clone the Repository
+```bash
+git clone https://github.com/kristinasamM/nlp.git
+cd nlp
+```
+
+### 2. Install Dependencies
+Ensure Python 3.9+ is installed. Install the requirements:
 ```bash
 pip install -r requirements.txt
 ```
