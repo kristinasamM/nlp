@@ -21,32 +21,30 @@ Key Capabilities:
 - 100% offline and transparent NLP (no external APIs, no cloud dependency).
 
 --------------------------------------------------------------------------------
-2. TEAM CONTRIBUTIONS & MODULE RESPONSIBILITIES
+2. TECHNICAL ARCHITECTURE & NLP PIPELINE
 --------------------------------------------------------------------------------
-- Komal:
-  Document Reading, Preprocessing & Easy Notes
-  Files: modules/member1_preprocessing.py, member1_chunker.py, member1_easy_notes.py
-  Role: Multi-format parsing (PDF, Word docx, TXT, MD), ligature cleaning,
-        abbreviation-safe sentence splitting, section chunking, and ReportLab PDF.
+1. Document Ingestion & Preprocessing:
+   - Multi-format extraction (PDF via pypdf, Word .docx XML, TXT, Markdown).
+   - Ligature normalization, whitespace cleaning, and abbreviation-safe sentence splitting.
+   - Heading-aware chunking preserving exact character offsets.
 
-- Anushka:
-  Topic Mining & Viva Question Generation
-  Files: modules/member2_topic_extraction.py, member3_question_generator.py,
-         member3_duplicate_filter.py
-  Role: Sublinear TF-IDF, TextRank PageRank graph model, Bloom's Taxonomy question
-        synthesis, and semantic deduplication.
+2. Topic Extraction & Keyphrase Mining:
+   - Sublinear TF-IDF scoring across document chunks.
+   - TextRank graph centrality algorithm with PageRank power iteration.
+   - Definitional pattern matching for automated glossary generation.
 
-- Kristina:
-  Oral Answer Evaluation & Revision Guidance
-  Files: modules/member4_answer_evaluator.py
-  Role: Multi-criteria oral assessment (Concept Recall 40%, Cosine Similarity 35%,
-        Depth 15%, Discourse Markers 10%), follow-up questions, and revision tracking.
+3. Question Generation & Deduplication:
+   - Authentic viva questions generated across Bloom's Taxonomy cognitive levels:
+     Recall & Definitions, Step-by-Step Mechanisms, Trade-offs & Comparisons.
+   - Semantic deduplication filter using Jaccard similarity and Bloom alignment.
 
-- Parth:
-  Interactive Frontend, Dictation & UX
-  Files: static/index.html, static/style.css, static/app.js, app.py
-  Role: 5-tab student interface, Web Speech API microphone dictation, TOC sidebar,
-        modal citation reader, and FastAPI REST endpoints.
+4. Oral Answer Evaluation:
+   - Composite academic rubric scoring:
+     * Stemmed Concept Recall: 40%
+     * TF-IDF Cosine Similarity: 35%
+     * Technical Elaboration Depth: 15%
+     * Discourse Reasoning Markers: 10%
+   - Missing-concept breakdown and adaptive follow-up questions.
 
 --------------------------------------------------------------------------------
 3. HOW TO RUN THE PROJECT (QUICK START)
@@ -69,7 +67,7 @@ Step 5: Open your web browser and navigate to:
 --------------------------------------------------------------------------------
 4. HOW TO RUN UNIT TESTS
 --------------------------------------------------------------------------------
-To run the automated test suite covering all 4 pipeline stages:
+To run the automated test suite covering all pipeline stages:
    python -m unittest tests/test_pipeline_stages.py
 
 --------------------------------------------------------------------------------
